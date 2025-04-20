@@ -46,4 +46,14 @@ public class TodoService {
 		return todoRecord;
 	}
 
+	public void delete(Long id) {
+		
+		if (repository.existsById(id)) {
+			repository.deleteById(id);
+		} else {
+			throw (new ResourceNotFoundException(id));
+		}
+		
+	}
+
 }
