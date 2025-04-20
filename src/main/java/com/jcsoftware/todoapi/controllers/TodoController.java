@@ -17,7 +17,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jcsoftware.todoapi.records.InsertTodoRecord;
 import com.jcsoftware.todoapi.records.TodoRecord;
+import com.jcsoftware.todoapi.records.UpdateTodoRecord;
 import com.jcsoftware.todoapi.services.TodoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/todos")
@@ -33,7 +36,7 @@ public class TodoController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<TodoRecord> insert(@RequestBody InsertTodoRecord dto){
+	public ResponseEntity<TodoRecord> insert(@Valid @RequestBody InsertTodoRecord dto){
 		
 		TodoRecord newTodoRecord = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -49,7 +52,7 @@ public class TodoController {
 	}
 	
 	@PutMapping(value="/{id}")
-	public ResponseEntity<TodoRecord> update(@PathVariable Long id,@RequestBody TodoRecord dto){
+	public ResponseEntity<TodoRecord> update(@PathVariable Long id,@Valid @RequestBody UpdateTodoRecord dto){
 		
 		TodoRecord todoRecord = service.update(id, dto);
 		return ResponseEntity.ok().body(todoRecord);

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jcsoftware.todoapi.entities.Todo;
 import com.jcsoftware.todoapi.records.InsertTodoRecord;
 import com.jcsoftware.todoapi.records.TodoRecord;
+import com.jcsoftware.todoapi.records.UpdateTodoRecord;
 import com.jcsoftware.todoapi.repositories.TodoRepository;
 import com.jcsoftware.todoapi.services.exceptions.ResourceNotFoundException;
 
@@ -64,7 +65,7 @@ public class TodoService {
 	}
 	
 	@Transactional
-	public TodoRecord update(Long id, TodoRecord dto) {
+	public TodoRecord update(Long id, UpdateTodoRecord dto) {
 		
 		try {
 			Todo todo = repository.getReferenceById(id);
