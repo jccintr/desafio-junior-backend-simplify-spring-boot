@@ -5,12 +5,16 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jcsoftware.todoapi.entities.Todo;
 import com.jcsoftware.todoapi.records.InsertTodoRecord;
 import com.jcsoftware.todoapi.records.TodoRecord;
 import com.jcsoftware.todoapi.repositories.TodoRepository;
 import com.jcsoftware.todoapi.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class TodoService {
@@ -25,6 +29,7 @@ public class TodoService {
 		
 	}
 
+	@Transactional
 	public TodoRecord insert(InsertTodoRecord dto) {
 		Todo newTodo = new Todo();
 		newTodo.setName(dto.name());
@@ -35,7 +40,8 @@ public class TodoService {
 		return new TodoRecord(newTodo);
 		
 	}
-
+	
+	@Transactional(readOnly = true)
 	public TodoRecord findById(Long id) {
 		
 		Optional<Todo> todoO = repository.findById(id);
@@ -46,6 +52,7 @@ public class TodoService {
 		return todoRecord;
 	}
 
+	@Transactional(propagation=Propagation.SUPPORTS)
 	public void delete(Long id) {
 		
 		if (repository.existsById(id)) {
@@ -54,6 +61,23 @@ public class TodoService {
 			throw (new ResourceNotFoundException(id));
 		}
 		
+	}
+	
+	@Transactional
+	public TodoRecord update(Long id, TodoRecord dto) {
+		
+		try {
+			Todo todo = repository.getReferenceById(id);
+			todo.setName(dto.name());
+			todo.setDescription(dto.description());
+			todo.setDone(dto.done());
+			todo.setPriority(dto.priority());
+			todo = repository.save(todo);
+			return new TodoRecord(todo);
+		} catch (EntityNotFoundException e) {
+			throw (new ResourceNotFoundException(id));
+		}
+
 	}
 
 }
