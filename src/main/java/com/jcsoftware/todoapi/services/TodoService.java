@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,8 @@ public class TodoService {
 	private TodoRepository repository;
 
 	public List<TodoRecord> findAll() {
-		
-		List<Todo> todos = repository.findAll();
+		Sort sort = Sort.by("done").ascending().and(Sort.by("priority").descending()).and(Sort.by("name").ascending());
+		List<Todo> todos = repository.findAll(sort);
 		return todos.stream().map(x-> new TodoRecord(x)).toList();
 		
 	}
